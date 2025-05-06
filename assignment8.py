@@ -34,7 +34,6 @@ def averageMoisture():
     if count == 0:
         return "No moisture data found in past 3 hours."
     return f"Average fridge moisture over past 3 hours: {total / count:.2f}% RH"
-<<<<<<< HEAD
 
 def averageWaterUsage():
     conn = psycopg2.connect("postgresql://neondb_owner:npg_9gx6WRFVwoYE@ep-quiet-frost-a67ek0uk-pooler.us-west-2.aws.neon.tech/neondb?sslmode=require")
@@ -100,8 +99,6 @@ def highestElectric():
     conn.close()
     most_device = max(usage, key=usage.get)
     return f"{most_device} used the most electricity: {usage[most_device]:.2f} kWh"
-=======
->>>>>>> fae1aeba875abeeace05aeb6aa182341bf981f62
 
 # Sets up TCP client socket
 def client(IP, portNumber):
@@ -213,4 +210,5 @@ def main():
             continue
     print("\nPress Enter to Close Program")
 
+# Main
 main()
