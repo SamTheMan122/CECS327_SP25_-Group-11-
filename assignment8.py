@@ -1,6 +1,6 @@
-# CECS 327 - Assignment 5
-# Samuel Barcarse | 030068244
-# March 16, 2025
+# CECS 327 - Assignment 8
+# Samuel Barcarse and Jan Montemayor
+# May 5, 2025
 
 import socket
 
@@ -16,15 +16,18 @@ def client(IP, portNumber):
     # Loops through asking the user if they want to send a message.
     # Stops when user enters N (no)
     sendMessage = True
-    while sendMessage:
-        choice = input("\nSend Message? (Y/N): ")
-        if choice.upper() == "Y":
-            message = input("\nEnter message to send: ")
-            TCPSocket.send(bytearray(str(message), encoding="utf-8"))
+    choice = "Y"
+    print("1. What is the average moisture inside my kitchen fridge in the past three hours?")
+    print("2. What is the average water consumption per cycle in my smart dishwasher?")
+    print("3. Which device consumed more electricity among my three IoT devices (two refrigerators and a dishwasher)?")
+    while choice is not "Q":
+        choice = input("\nEnter Selection: ")
+        if choice == "1" or choice == "2" or choice == "3":
+            TCPSocket.send(bytearray(choice, encoding="utf-8"))
             serverResponse = TCPSocket.recv(1024).decode("utf-8")
             print(f"\nServer Response: {serverResponse}")
         else:
-            sendMessage = False
+            print("\nSorry, this query cannot be processed. Please try one of the following: [1, 2, 3, Q].")
     TCPSocket.close()
 
 # Server creates a TCP socket
