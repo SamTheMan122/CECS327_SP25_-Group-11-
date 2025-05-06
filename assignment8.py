@@ -3,6 +3,37 @@
 # May 5, 2025
 
 import socket
+import psycopg2
+from datetime import datetime, timedelta
+import pytz
+
+def averageMoisture():
+    conn = psycopg2.connect("postgresql://neondb_owner:npg_9gx6WRFVwoYE@ep-quiet-frost-a67ek0uk-pooler.us-west-2.aws.neon.tech/neondb?sslmode=require")
+    cursor = conn.cursor()
+    # SQL query to grab devices that are only of 'fridge' type
+    cursor.execute('SELECT "assetUid" FROM "Assignment8_metadata" WHERE "assetType" = %s', ('Fridge',))
+    utc = pytz.utc
+    end_time = datetime.now(utc)
+    start_time = end_time - timedelta(hours=3)
+    # SQL query to grab the day of since need to determine past three hour interval
+    cursor.execute('SELECT payload FROM "Assignment8_virtual" WHERE time BETWEEN %s AND %s', (start_time, end_time))
+    total, count = 0.0, 0
+    # Loops through each payload
+    for (payload,) in cursor.fetchall():
+        # Fridges have moisture meters (both have different names though). Grabs ammeter values of fridge devices
+        if "Moisture Meter - FridgeMoistureMeter" in payload:
+            rh = float(payload["Moisture Meter - FridgeMoistureMeter"])
+            total += rh
+            count += 1
+        if "Moisture Meter - FridgeMoistureMeter2" in payload:
+            rh = float(payload["Moisture Meter - FridgeMoistureMeter2"])
+            total += rh
+            count += 1
+    cursor.close()
+    conn.close()
+    if count == 0:
+        return "No moisture data found in past 3 hours."
+    return f"Average fridge moisture over past 3 hours: {total / count:.2f}% RH"
 
 # Sets up TCP client socket
 def client(IP, portNumber):
